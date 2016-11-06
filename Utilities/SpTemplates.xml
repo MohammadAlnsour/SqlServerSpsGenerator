@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SpsTemplate>
+  <InsertStoredProcedure>
+    GO
+    /****** Object:  StoredProcedure [dbo].[@TableNameInsert]    Script Date: @ScriptDateTime ******/
+    SET ANSI_NULLS ON
+    GO
+    SET QUOTED_IDENTIFIER ON
+    GO
+
+    CREATE PROC [dbo].[@TableNameInsert]
+    @InsertParameters
+    AS
+    SET NOCOUNT ON
+    SET XACT_ABORT ON
+
+    BEGIN TRAN
+
+    INSERT INTO [dbo].@TableName (@Columns)
+    SELECT @SelectParameters
+
+    SELECT @PrimaryIDName
+    FROM dbo.@TableName
+    WHERE @PrimaryIDName = SCOPE_IDENTITY()
+    COMMIT
+  </InsertStoredProcedure>
+  <UpdateStoredProcedure>
+    GO
+    /****** Object:  StoredProcedure [dbo].[@TableNameUpdate]    Script Date: @ScriptDateTime ******/
+    SET ANSI_NULLS ON
+    GO
+    SET QUOTED_IDENTIFIER ON
+    GO
+
+    CREATE PROC [dbo].[@TableNameUpdate]
+    @UpdateParameters
+    AS
+    SET NOCOUNT ON
+    SET XACT_ABORT ON
+
+    BEGIN TRAN
+
+    Update [dbo].[@TableName]
+    SET  @UpdateColumnsParameters
+    where
+    @PrimaryIDName = @PrimaryIDParameter
+    SELECT *
+    FROM   [dbo].[@TableName]
+    WHERE  @PrimaryIDName = SCOPE_IDENTITY()
+
+    COMMIT
+  </UpdateStoredProcedure>
+  <DeleteStoredProcedure>
+    GO
+    /****** Object:  StoredProcedure [dbo].[@TableNameDelete]    Script Date: @ScriptDateTime ******/
+    SET ANSI_NULLS ON
+    GO
+    SET QUOTED_IDENTIFIER ON
+    GO
+
+    CREATE PROC [dbo].[@TableNameDelete]
+    @DeleteParameters
+    AS
+    SET NOCOUNT ON
+    SET XACT_ABORT ON
+
+    BEGIN TRAN
+
+    DELETE
+    FROM   [dbo].@TableName
+    WHERE  @PrimaryIDName = @PrimaryIDParameter
+
+    COMMIT
+
+  </DeleteStoredProcedure>
+  <SelectStoredProcedure>
+    GO
+    /****** Object:  StoredProcedure [dbo].[@TableNameSelect]    Script Date: @ScriptDateTime ******/
+    SET ANSI_NULLS ON
+    GO
+    SET QUOTED_IDENTIFIER ON
+    GO
+
+    CREATE PROC [dbo].[@TableNameSelect]
+    @SelectParameters
+    AS
+    SET NOCOUNT ON
+    SET XACT_ABORT ON
+
+    BEGIN TRAN
+
+    SELECT *
+    FROM   [dbo].@TableName
+    WHERE  (@PrimaryIDName = @PrimaryIDParameter OR @PrimaryIDParameter IS NULL)
+
+    COMMIT
+
+
+  </SelectStoredProcedure>
+  <SelectAllStoredProcedure>
+    GO
+    /****** Object:  StoredProcedure [dbo].[@TableNameSelectALL]    Script Date: @ScriptDateTime ******/
+    SET ANSI_NULLS ON
+    GO
+    SET QUOTED_IDENTIFIER ON
+    GO
+
+    CREATE PROC [dbo].[@TableNameSelectALL]
+    @MaxRows INT
+    AS
+    SET NOCOUNT ON
+    SET XACT_ABORT ON
+
+    BEGIN TRAN
+
+    SELECT TOP(@MaxRows) *
+    FROM   [dbo].@TableName
+    Order by @PrimaryIDName desc
+
+    COMMIT
+
+  </SelectAllStoredProcedure>
+</SpsTemplate>
+
